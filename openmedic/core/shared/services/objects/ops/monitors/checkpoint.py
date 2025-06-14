@@ -8,6 +8,7 @@ from openmedic.core.shared.services.objects.monitor import MonitorOpBase, Monito
 import openmedic.core.shared.services.objects.registry as registry
 from openmedic.core.shared.services.objects.model import OpenMedicModelBase
 import openmedic.core.shared.services.utils as utils
+from openmedic.core.shared.services.management import ConfigReader
 
 
 @dataclass
@@ -53,6 +54,9 @@ class CheckPoint(MonitorOpBase):
 
         return f"{target_dataset}_{target_score}"
 
+    def _save(self, model):
+        pass
+
     def execute(self, model: OpenMedicModelBase, **kwargs):
         is_save: bool = True
         if self.save_best:
@@ -83,7 +87,7 @@ class CheckPoint(MonitorOpBase):
 
         if patience:
             if self._count >= patience:
-                raise utils.BreakLoop(f"[CheckPoint][execute]: The score has stopped improving after {patience} times")
+                raise utils.BreakLoop(f"[CheckPoint][Exception]: The score has stopped improving after {patience} times")
 
 
 def init():

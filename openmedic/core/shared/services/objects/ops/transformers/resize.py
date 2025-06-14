@@ -3,12 +3,12 @@ from typing import List, Optional
 import numpy as np
 import cv2
 
-from openmedic.core.shared.services.objects.transform import TransformOpBase, TransformOpError
+from openmedic.core.shared.services.objects.transform import OpenMedicTransformOpBase, OpenMedicTransformOpError
 import openmedic.core.shared.services.objects.registry as registry
 
 
 @dataclass
-class Resize(TransformOpBase):
+class Resize(OpenMedicTransformOpBase):
     __LIMIT_SIZE: int=100
     __GT_INTERPOLATION: int=cv2.INTER_NEAREST
 
@@ -25,10 +25,10 @@ class Resize(TransformOpBase):
         interpolation: Optional[str] = kwargs.get("interpolation", None)
 
         if not target_w or not target_h:
-            raise TransformOpError("`target_w` or `target_h` does not exist in cofig file.")
+            raise OpenMedicTransformOpError("`target_w` or `target_h` does not exist in cofig file.")
         elif target_w < limit_size \
             or target_h < limit_size:
-            raise TransformOpError(f"`target_w` or `target_h` needs to greater or equal than {limit_size}.")
+            raise OpenMedicTransformOpError(f"`target_w` or `target_h` needs to greater or equal than {limit_size}.")
 
         if not interpolation:
             # Set default interpolation.

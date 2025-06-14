@@ -19,6 +19,13 @@ class OpenMedicDataset(Dataset):
         annotation_path: str,
         transform_ops: Optional[List[TransformOpBase]]
     ):
+        """
+        Input:
+        ------
+            image_dir: str - Directory of images
+            annotation_path: str - Annotation file (COCO format)
+        
+        """
         self.image_dir: str = image_dir
         self.annotation_path: str = annotation_path
         self.coco: COCO = utils.load_coco_file(annotation_path=annotation_path)

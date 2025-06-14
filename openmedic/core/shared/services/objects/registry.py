@@ -35,10 +35,10 @@ class ModelRegister(BaseRegister):
             module_interface.init()
 
     @classmethod
-    def register(cls, model_class: model.ModelBase, model_name: str=''):
+    def register(cls, model_class: model.OpenMedicModelBase, model_name: str=''):
         if not model_name:
             model_name = model_class.get_name()
-        model.ModelManager.add_model(model_name=model_name, model_class=model_class)
+        model.OpenMedicModel.add_model(model_name=model_name, model_class=model_class)
 
 
 class TransformRegister(BaseRegister):
@@ -55,10 +55,10 @@ class TransformRegister(BaseRegister):
             model_interface.init()
 
     @classmethod
-    def register(cls, transform_class: transform.TransformOpBase, transfrom_name: str=''):
+    def register(cls, transform_class: transform.OpenMedicTransformOpBase, transfrom_name: str=''):
         if not transfrom_name:
             transfrom_name = transform_class.get_name()
-        transform.TransformManager.add_op(op_name=transfrom_name, op_class=transform_class)
+        transform.OpenMedicTransform.add_op(op_name=transfrom_name, op_class=transform_class)
 
 
 class MetricRegister(BaseRegister):

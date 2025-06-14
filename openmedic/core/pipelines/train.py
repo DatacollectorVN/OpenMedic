@@ -9,15 +9,15 @@ import statistics
 
 import openmedic.core.shared.helper as helper
 import openmedic.core.shared.services as services
-from openmedic.core.shared.services import DatasetManager, CustomTrainer
+from openmedic.core.shared.services import OpenMedicDataset, OpenMedicTrainer
 
 logging.basicConfig(level=logging.INFO)
 warnings.filterwarnings("ignore")
 
 
-def _init_objects(config_path: str) -> List[Union[DatasetManager, CustomTrainer]]:
+def _init_objects(config_path: str) -> List[Union[OpenMedicDataset, OpenMedicTrainer]]:
     services.ConfigReader.initialize(config_path=config_path)
-    return services.DatasetManager.initialize_with_config(), services.CustomTrainer.initialize_with_config()
+    return services.OpenMedicDataset.initialize_with_config(), services.OpenMedicTrainer.initialize_with_config()
 
 
 def _get_pipeline_config(pipeline_info: dict) -> dict:
@@ -74,7 +74,7 @@ def _process_batch(images: torch.Tensor, gts: torch.Tensor, device: str):
     return images, gts
 
 
-def train_val_split(custom_dataset: DatasetManager, train_ratio: float, seed: int) -> List[DatasetManager]:
+def train_val_split(custom_dataset: OpenMedicDataset, train_ratio: float, seed: int) -> List[OpenMedicDataset]:
     generator: torch.Generator = torch.Generator().manual_seed(seed)
     train_size: int= int(train_ratio * len(custom_dataset))
     val_size: int = len(custom_dataset) - train_size
@@ -112,8 +112,8 @@ def init_arguments():
 @helper.montior
 def run(*, pipeline_name: str, config_path: str):
     logging.info(f"[{pipeline_name}][run]: Initializing training object...")
-    custom_dataset: DatasetManager
-    custom_trainer: CustomTrainer
+    custom_dataset: OpenMedicDataset
+    custom_trainer: OpenMedicTrainer
     custom_dataset, custom_trainer = _init_objects(config_path=config_path)
     device: str = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     pipeline_info: dict = services.ConfigReader.get_field(name="pipeline")
@@ -126,8 +126,8 @@ def run(*, pipeline_name: str, config_path: str):
         logging.warning("User set to use GPU but the found the only CPU avaiable. Stopping processing...")
         return {}
 
-    train_dataset: DatasetManager
-    val_dataset: DatasetManager
+    train_dataset: OpenMedicDataset
+    val_dataset: OpenMedicDataset
     train_dataset, val_dataset = train_val_split(
         custom_dataset=custom_dataset,
         train_ratio=pipeline_config["train_ratio"],
@@ -151,7 +151,7 @@ def run(*, pipeline_name: str, config_path: str):
     images: torch.Tensor
     gts: torch.Tensor
     epoch: int
-    model: services.ModelBase
+    model: services.OpenMedicModelBase
     optimizer: optim.Optimizer
 
     model, optimizer = custom_trainer.get_object(
